@@ -101,6 +101,7 @@ class labelFZGUI(QMainWindow):
         xpoint=event.xdata
         ypoint=event.ydata
         self.xPoint.append(self.find_nearest(self.x, xpoint))
+        self.xPoint.sort()
         
         self.ui.label.setText(str(self.xPoint))
 
@@ -115,9 +116,12 @@ class labelFZGUI(QMainWindow):
         self.saveDirectory = QFileDialog.getExistingDirectory(self, "Select Directory to Save Data")
 
     def exportData(self):
-        nameFZ = self.saveDirectory + '/fz' + str(self.idx) + '.txt'
+        q = self.nameFile.split('/')
+        nameFZ = self.saveDirectory + '/file_' + str(self.idx) + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] +'_fz.txt'
+        print(nameFZ)
         np.savetxt(nameFZ, self.y)
-        namePoint = self.saveDirectory + '/points' + str(self.idx) + '.txt'
+        namePoint = self.saveDirectory + '/file_' + str(self.idx)  + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] + '_labelled_points.txt'
+        print(namePoint)
         np.savetxt(namePoint, self.xPoint)
 
 if __name__=="__main__":
