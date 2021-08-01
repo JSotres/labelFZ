@@ -26,6 +26,7 @@ class labelFZGUI(QMainWindow):
         self.ui.previousPushButton.clicked.connect(self.showPreviousForceRamp)
 
         self.ui.loadPushButton.clicked.connect(self.openfiledialog)
+        self.ui.actionLoadForceVolume.triggered.connect(self.openfiledialog)
 
         self.fvObject = NanoscopeForceVolumeObject()
 
