@@ -370,7 +370,14 @@
     <addaction name="actionLoadForceRamps"/>
     <addaction name="actionLoadForceVolume"/>
    </widget>
+   <widget class="QMenu" name="menuExport_Options">
+    <property name="title">
+     <string>Export Options</string>
+    </property>
+    <addaction name="actionSetExportDir"/>
+   </widget>
    <addaction name="menuOpen"/>
+   <addaction name="menuExport_Options"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLoadForceRamps">
@@ -381,6 +388,11 @@
   <action name="actionLoadForceVolume">
    <property name="text">
     <string>Force Volume</string>
+   </property>
+  </action>
+  <action name="actionSetExportDir">
+   <property name="text">
+    <string>Set Export Dir</string>
    </property>
   </action>
  </widget>

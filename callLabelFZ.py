@@ -19,13 +19,13 @@ class labelFZGUI(QMainWindow):
 
         
         self.ui.exportPushButton.clicked.connect(self.exportData)
-        self.ui.directoryPushButton.clicked.connect(self.selectSaveDirectory)
+        
+        self.ui.actionSetExportDir.triggered.connect(self.selectExportDir)
         self.ui.getPointPushButton.clicked.connect(self.get_point)
 
         self.ui.nextPushButton.clicked.connect(self.showNextForceRamp)
         self.ui.previousPushButton.clicked.connect(self.showPreviousForceRamp)
 
-        self.ui.loadPushButton.clicked.connect(self.openfiledialog)
         self.ui.actionLoadForceVolume.triggered.connect(self.openfiledialog)
 
         self.fvObject = NanoscopeForceVolumeObject()
@@ -113,15 +113,15 @@ class labelFZGUI(QMainWindow):
         idx = (np.abs(array - value)).argmin()
         return array[idx]
 
-    def selectSaveDirectory(self):
-        self.saveDirectory = QFileDialog.getExistingDirectory(self, "Select Directory to Save Data")
+    def selectExportDir(self):
+        self.exportDirectory = QFileDialog.getExistingDirectory(self, "Select Directory to Export Data")
 
     def exportData(self):
         q = self.nameFile.split('/')
-        nameFZ = self.saveDirectory + '/file_' + str(self.idx) + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] +'_fz.txt'
+        nameFZ = self.exportDirectory + '/file_' + str(self.idx) + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] +'_fz.txt'
         print(nameFZ)
         np.savetxt(nameFZ, self.y)
-        namePoint = self.saveDirectory + '/file_' + str(self.idx)  + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] + '_labelled_points.txt'
+        namePoint = self.exportDirectory + '/file_' + str(self.idx)  + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] + '_labelled_points.txt'
         print(namePoint)
         np.savetxt(namePoint, self.xPoint)
 
