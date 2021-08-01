@@ -17,6 +17,8 @@ class labelFZGUI(QMainWindow):
         MplToolbar = NavigationToolbar(self.ui.MplWidget.canvas, self)
         self.addToolBar(MplToolbar)
 
+        self.ui.closePushButton.clicked.connect(QApplication.instance().quit)
+
         
         self.ui.exportPushButton.clicked.connect(self.exportData)
         
