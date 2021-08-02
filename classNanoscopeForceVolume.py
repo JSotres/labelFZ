@@ -131,7 +131,7 @@ class NanoscopeForceVolumeObject():
 
         self.closeDataBaseConnection()
 
-    def getForwardForceRampFromID(self, database_name, idx, direction='ForceForward', xDimensions=True):
+    def getForceRampFromID(self, database_name, idx, direction='ForceForward', xDimensions=True):
 
         self.connectToDataBase(database_name)
 
