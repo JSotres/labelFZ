@@ -6,6 +6,7 @@ from LabelFZ import *
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
 from classNanoscopeForceVolume import *
+from classNanoscopeForceRamp import *
 import os
 
 class labelFZGUI(QMainWindow):
@@ -28,13 +29,8 @@ class labelFZGUI(QMainWindow):
         self.ui.nextPushButton.clicked.connect(self.showNextForceRamp)
         self.ui.previousPushButton.clicked.connect(self.showPreviousForceRamp)
 
-        self.ui.actionLoadForceVolume.triggered.connect(self.openfiledialog)
-
-        self.fvObject = NanoscopeForceVolumeObject()
-
-        self.database_name = 'temporalDataBase.db'
-
-        
+        self.ui.actionLoadForceVolume.triggered.connect(self.openForceVolume)
+        self.ui.actionLoadForceRamps.triggered.connect(self.openForceRamps)       
         
         self.max_idx=0
         self.min_idx=0
@@ -45,14 +41,16 @@ class labelFZGUI(QMainWindow):
         self.xPoint = []
         self.xClass = []
 
-        self.ui.idxLabel.setText(str(self.idx))
-        self.update_graph()
-
         
+        self.update_graph()        
 
         self.show()
 
-    def openfiledialog(self):
+    def openForceVolume(self):
+
+        self.fzObject = NanoscopeForceVolumeObject()
+        self.fzObjectType = "Force Volume"
+        self.database_name = 'temporalDataBase.db'
         caption = "Open Nanoscope9 Force Volume File"
         directory = os.getcwd()
         filter_mask = "All Files (*)"
@@ -60,11 +58,28 @@ class labelFZGUI(QMainWindow):
         # Initially, and empty list that will contain the name of the
         # loaded files is created
         self.nameFile = filenames[0]
-        self.fvObject.fvToSQL(self.nameFile, self.database_name)
-        self.max_idx = self.fvObject.getNumberForceRamps(self.database_name)
-        self.min_idx = 0
-        self.idx = 0
-        self.x, self.y = self.fvObject.getForwardForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
+        self.fzObject.fvToSQL(self.nameFile, self.database_name)
+        self.max_idx = self.fzObject.getNumberForceRamps(self.database_name)-1
+        self.x, self.y = self.fzObject.getForwardForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
+        self.ui.idxLabel.setText(str(self.idx))
+        self.update_graph()
+
+    def openForceRamps(self):
+        self.fzObjectType = "Force Ramps"
+        caption = "Open File"
+        directory = os.getcwd()
+        filter_mask = "All Files (*)"
+        self.filenames = QFileDialog.getOpenFileNames(self, caption, directory, filter_mask)[0]
+        self.fzObject = []
+        self.max_idx = len(self.filenames)-1
+
+        for i in range(len(self.filenames)):
+            self.fzObject.append(NanoscopeForceRamp(self.filenames[i]))
+            self.fzObject[i].readHeader()
+            self.fzObject[i].readRamps()
+        self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+        self.x = np.arange(self.y.shape[0])
+        self.ui.idxLabel.setText(str(self.idx))
         self.update_graph()
 
     def showNextForceRamp(self):
@@ -74,7 +89,11 @@ class labelFZGUI(QMainWindow):
             self.xClass = []
             self.idx += 1
             self.ui.idxLabel.setText(str(self.idx))
-            self.x, self.y = self.fvObject.getForwardForceRampFromID(self.database_name, self.idx+1, direction='ForceForward', xDimensions=False)
+            if self.fzObjectType == "Force Volume":
+                self.x, self.y = self.fzObject.getForwardForceRampFromID(self.database_name, self.idx+1, direction='ForceForward', xDimensions=False)
+            elif self.fzObjectType == "Force Ramps":
+                self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+                self.x = np.arange(self.y.shape[0])
             self.update_graph()
 
     def showPreviousForceRamp(self):
@@ -84,7 +103,11 @@ class labelFZGUI(QMainWindow):
             self.xClass = []
             self.idx -= 1
             self.ui.idxLabel.setText(str(self.idx))
-            self.x, self.y = self.fvObject.getForwardForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
+            if self.fzObjectType == "Force Volume":
+                self.x, self.y = self.fzObject.getForwardForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
+            elif self.fzObjectType == "Force Ramps":
+                self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+                self.x = np.arange(self.y.shape[0])
             self.update_graph()
 
     def get_point(self):
@@ -119,13 +142,19 @@ class labelFZGUI(QMainWindow):
         self.exportDirectory = QFileDialog.getExistingDirectory(self, "Select Directory to Export Data")
 
     def exportData(self):
-        q = self.nameFile.split('/')
+        if self.fzObjectType == "Force Volume":
+            q = self.nameFile.split('/')
+        elif self.fzObjectType == "Force Ramps":
+            q = self.filenames[self.idx].split('/')
+                
         nameFZ = self.exportDirectory + '/file_' + str(self.idx) + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] +'_fz.txt'
-        print(nameFZ)
+        #print(nameFZ)
         np.savetxt(nameFZ, self.y)
         namePoint = self.exportDirectory + '/file_' + str(self.idx)  + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] + '_labelled_points.txt'
-        print(namePoint)
+        #print(namePoint)
         np.savetxt(namePoint, self.xPoint)
+        
+                
 
 if __name__=="__main__":
     app = QApplication(sys.argv)
