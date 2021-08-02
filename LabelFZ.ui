@@ -6,16 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
+    <width>811</width>
     <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>labelFZ</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" rowspan="2">
+    <item row="0" column="0" rowspan="4">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="mplwidget1plot" name="MplWidget" native="true">
@@ -212,7 +212,7 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="1" colspan="2">
+    <item row="0" column="1" colspan="3">
      <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
        <spacer name="horizontalSpacer_2">
@@ -335,7 +335,7 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="3">
+    <item row="0" column="4">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -349,6 +349,77 @@
      </spacer>
     </item>
     <item row="1" column="1">
+     <spacer name="horizontalSpacer_6">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>71</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="2">
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>FZ Direction</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QRadioButton" name="ForwardDirectionRadioButton">
+          <property name="text">
+           <string>Forward</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="BackwardDirectionRadioButton">
+          <property name="text">
+           <string>Backward</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="3">
+     <spacer name="horizontalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>70</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="2">
+     <spacer name="verticalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>244</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1" colspan="3">
      <spacer name="horizontalSpacer_9">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -361,7 +432,7 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="2" colspan="2">
+    <item row="3" column="4">
      <widget class="QPushButton" name="closePushButton">
       <property name="minimumSize">
        <size>
@@ -387,7 +458,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>802</width>
+     <width>811</width>
      <height>22</height>
     </rect>
    </property>

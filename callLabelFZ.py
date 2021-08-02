@@ -30,7 +30,10 @@ class labelFZGUI(QMainWindow):
         self.ui.previousPushButton.clicked.connect(self.showPreviousForceRamp)
 
         self.ui.actionLoadForceVolume.triggered.connect(self.openForceVolume)
-        self.ui.actionLoadForceRamps.triggered.connect(self.openForceRamps)       
+        self.ui.actionLoadForceRamps.triggered.connect(self.openForceRamps)
+
+        self.ui.ForwardDirectionRadioButton.toggled.connect(self.changeFZDirection)
+        self.ui.BackwardDirectionRadioButton.toggled.connect(self.changeFZDirection)
         
         self.max_idx=0
         self.min_idx=0
@@ -41,7 +44,7 @@ class labelFZGUI(QMainWindow):
         self.xPoint = []
         self.xClass = []
 
-        
+        self.fzDirection = 'ForceForward'
         self.update_graph()        
 
         self.show()
@@ -60,8 +63,23 @@ class labelFZGUI(QMainWindow):
         self.nameFile = filenames[0]
         self.fzObject.fvToSQL(self.nameFile, self.database_name)
         self.max_idx = self.fzObject.getNumberForceRamps(self.database_name)-1
-        self.x, self.y = self.fzObject.getForwardForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
+        self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
         self.ui.idxLabel.setText(str(self.idx))
+        self.update_graph()
+
+    def changeFZDirection(self):
+        if self.ui.ForwardDirectionRadioButton.isChecked()==True:
+            self.fzDirection = 'ForceForward'
+            if self.fzObjectType == "Force Volume":
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
+            else:
+                self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+        else:
+            self.fzDirection = 'ForceBackward'
+            if self.fzObjectType == "Force Volume":
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
+            else:
+                self.y = self.fzObject[self.idx].Ramp[0]['RawY'][1]
         self.update_graph()
 
     def openForceRamps(self):
@@ -77,7 +95,10 @@ class labelFZGUI(QMainWindow):
             self.fzObject.append(NanoscopeForceRamp(self.filenames[i]))
             self.fzObject[i].readHeader()
             self.fzObject[i].readRamps()
-        self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+        if self.fzDirection == 'ForceForward':
+            self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+        else:
+            self.y = self.fzObject[self.idx].Ramp[0]['RawY'][1]
         self.x = np.arange(self.y.shape[0])
         self.ui.idxLabel.setText(str(self.idx))
         self.update_graph()
@@ -90,9 +111,12 @@ class labelFZGUI(QMainWindow):
             self.idx += 1
             self.ui.idxLabel.setText(str(self.idx))
             if self.fzObjectType == "Force Volume":
-                self.x, self.y = self.fzObject.getForwardForceRampFromID(self.database_name, self.idx+1, direction='ForceForward', xDimensions=False)
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
             elif self.fzObjectType == "Force Ramps":
-                self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+                if self.fzDirection == 'ForceForward':
+                    self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+                else:
+                    self.y = self.fzObject[self.idx].Ramp[0]['RawY'][1]
                 self.x = np.arange(self.y.shape[0])
             self.update_graph()
 
@@ -104,9 +128,12 @@ class labelFZGUI(QMainWindow):
             self.idx -= 1
             self.ui.idxLabel.setText(str(self.idx))
             if self.fzObjectType == "Force Volume":
-                self.x, self.y = self.fzObject.getForwardForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
             elif self.fzObjectType == "Force Ramps":
-                self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+                if self.fzDirection == 'ForceForward':
+                    self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
+                else:
+                    self.y = self.fzObject[self.idx].Ramp[0]['RawY'][1]
                 self.x = np.arange(self.y.shape[0])
             self.update_graph()
 
