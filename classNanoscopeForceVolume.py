@@ -266,7 +266,7 @@ class NanoscopeForceVolumeObject():
                         'pixelLengthColumn':[], 'pixelLengthRow':[]}
         
         fvParameters['numberOfMapRows'].append(int(headerParameters['Number of lines'][0]))
-        fvParameters['numberOfMapColumns'].append(int(headerParameters['Samps/line'][0]))
+        fvParameters['numberOfMapColumns'].append(int(headerParameters['Samps/line'][-1]))
         fvParameters['scanSize'].append(float(headerParameters['Scan Size'][0]))
         fvParameters['rampLength'].append(float(headerParameters['4:Ramp Size'][0] * headerParameters['Sens. Zsens'][0]))
         fvParameters['rampPoints'].append(int(headerParameters['Samps/line'][1]))
