@@ -175,11 +175,13 @@ class labelFZ_GUI(QMainWindow):
         elif self.fzObjectType == "Force Ramps":
             q = self.filenames[self.idx].split('/')
                 
-        nameFZ = self.exportDirectory + '/file_' + str(self.idx) + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] +'_fz.txt'
-        #print(nameFZ)
+        #nameFZ = self.exportDirectory + '/file_' + str(self.idx) + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] +'_fz.txt'
+        nameFZ = self.exportDirectory + '/' + self.ui.lineEditExportName.text() + '_' + str(self.idx)  + '_fz.txt'
+        print(nameFZ)
         np.savetxt(nameFZ, self.y)
-        namePoint = self.exportDirectory + '/file_' + str(self.idx)  + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] + '_labelled_points.txt'
-        #print(namePoint)
+        #namePoint = self.exportDirectory + '/file_' + str(self.idx)  + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] + '_labelled_points.txt'
+        namePoint = self.exportDirectory + '/' + self.ui.lineEditExportName.text() + '_' + str(self.idx)  +  '_labelled_points.txt'
+        print(namePoint)
         np.savetxt(namePoint, self.xPoint)
         
                 
