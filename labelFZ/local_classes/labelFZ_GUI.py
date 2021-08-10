@@ -64,7 +64,7 @@ class labelFZ_GUI(QMainWindow):
         self.nameFile = filenames[0]
         self.fzObject.fvToSQL(self.nameFile, self.database_name)
         self.max_idx = self.fzObject.getNumberForceRamps(self.database_name)-1
-        self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
+        self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=True)
         self.ui.idxLabel.setText(str(self.idx))
         self.update_graph()
 
@@ -72,13 +72,13 @@ class labelFZ_GUI(QMainWindow):
         if self.ui.ForwardDirectionRadioButton.isChecked()==True:
             self.fzDirection = 'ForceForward'
             if self.fzObjectType == "Force Volume":
-                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=True)
             else:
                 self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
         else:
             self.fzDirection = 'ForceBackward'
             if self.fzObjectType == "Force Volume":
-                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=True)
             else:
                 self.y = self.fzObject[self.idx].Ramp[0]['RawY'][1]
         self.update_graph()
@@ -112,13 +112,15 @@ class labelFZ_GUI(QMainWindow):
             self.idx += 1
             self.ui.idxLabel.setText(str(self.idx))
             if self.fzObjectType == "Force Volume":
-                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=False)
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, direction=self.fzDirection, xDimensions=True)
             elif self.fzObjectType == "Force Ramps":
                 if self.fzDirection == 'ForceForward':
                     self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
                 else:
                     self.y = self.fzObject[self.idx].Ramp[0]['RawY'][1]
                 self.x = np.arange(self.y.shape[0])
+            self.xpoint = []
+            self.ui.label.setText(str(self.xPoint))
             self.update_graph()
 
     def showPreviousForceRamp(self):
@@ -129,13 +131,15 @@ class labelFZ_GUI(QMainWindow):
             self.idx -= 1
             self.ui.idxLabel.setText(str(self.idx))
             if self.fzObjectType == "Force Volume":
-                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, xDimensions=False)
+                self.x, self.y = self.fzObject.getForceRampFromID(self.database_name, self.idx+1, xDimensions=True)
             elif self.fzObjectType == "Force Ramps":
                 if self.fzDirection == 'ForceForward':
                     self.y = self.fzObject[self.idx].Ramp[0]['RawY'][0]
                 else:
                     self.y = self.fzObject[self.idx].Ramp[0]['RawY'][1]
                 self.x = np.arange(self.y.shape[0])
+            self.xpoint = []
+            self.ui.label.setText(str(self.xPoint))
             self.update_graph()
 
     def get_point(self):
@@ -146,15 +150,14 @@ class labelFZ_GUI(QMainWindow):
         self.ui.MplWidget.canvas.axes.clear()
         self.ui.MplWidget.canvas.axes.plot(self.x, self.y)
         if self.xPoint:
-            self.ui.MplWidget.canvas.axes.plot(self.xPoint, self.y[np.array(self.xPoint).astype(int)],'ro')
+            self.ui.MplWidget.canvas.axes.plot(self.x[np.array(self.xPoint).astype(int)], self.y[np.array(self.xPoint).astype(int)],'ro')
         self.ui.MplWidget.canvas.draw()
 
     def onclick(self,event):
         #print('button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(event.button, event.x, event.y, event.xdata, event.ydata))
         self.ui.MplWidget.canvas.mpl_disconnect(self.cid)
-        xpoint=event.xdata
-        ypoint=event.ydata
-        self.xPoint.append(self.find_nearest(self.x, xpoint))
+        xpoint = np.abs(self.x - event.xdata).argmin()
+        self.xPoint.append(xpoint)
         self.xPoint.sort()
         
         self.ui.label.setText(str(self.xPoint))
@@ -175,13 +178,9 @@ class labelFZ_GUI(QMainWindow):
         elif self.fzObjectType == "Force Ramps":
             q = self.filenames[self.idx].split('/')
                 
-        #nameFZ = self.exportDirectory + '/file_' + str(self.idx) + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] +'_fz.txt'
         nameFZ = self.exportDirectory + '/' + self.ui.lineEditExportName.text() + '_' + str(self.idx)  + '_fz.txt'
-        print(nameFZ)
-        np.savetxt(nameFZ, self.y)
-        #namePoint = self.exportDirectory + '/file_' + str(self.idx)  + '_' + q[-1].split('.')[0] + q[-1].split('.')[1] + '_labelled_points.txt'
+        np.savetxt(nameFZ, [self.x,self.y])
         namePoint = self.exportDirectory + '/' + self.ui.lineEditExportName.text() + '_' + str(self.idx)  +  '_labelled_points.txt'
-        print(namePoint)
         np.savetxt(namePoint, self.xPoint)
         
                 
