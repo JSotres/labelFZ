@@ -1,6 +1,8 @@
 # labelFZ
 Application for labelling points of interest in AFM force ramps/curves.
 
+I use it to create datasets that later on I can use to train algorithms for automated detection of such points, which vcan be e.g., contact points, indentations and adhesion events.
+
 Briefly it allows to:
 1. Open a number of AFM force curves (fz) or a force volume file, and visualize each force curve individually. At present, it only works for data obtained with the Nanoscope 9 software.
 2. Select an array of points for each fz.
@@ -21,6 +23,10 @@ python -m labelFZ
 
 This will open the labelFZ GUI:
 ![labelFZ GUI](Figures/MainGUI.png)
-4. In the menu bar go to Open, choose whether you want to load a series of force curves or a single force volume file. Then, you should be able to visualize the first fz of the series or of the force volume file:
+
+4. In the menu bar go to *Open*, choose whether you want to load a series of force curves or a single force volume file. Then, you should be able to visualize the first fz of the series or of the force volume file:
 ![labelFZ GUI](Figures/Curve.png)
+
+5. The go in the menu bar to *Export Options -> Set Export Dir*, and select the directory where the output files will be saved.
+6. 
 
