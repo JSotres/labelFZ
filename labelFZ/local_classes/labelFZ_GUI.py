@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 from PyQt5 import QtCore
-import sys
 import matplotlib.pyplot as plt
 from ..qt5_ui_files.LabelFZ import *
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
@@ -164,11 +163,6 @@ class labelFZ_GUI(QMainWindow):
 
         self.update_graph()
 
-    def find_nearest(self, array, value):
-        array = np.asarray(array)
-        idx = (np.abs(array - value)).argmin()
-        return array[idx]
-
     def selectExportDir(self):
         self.exportDirectory = QFileDialog.getExistingDirectory(self, "Select Directory to Export Data")
 
@@ -185,10 +179,3 @@ class labelFZ_GUI(QMainWindow):
         
                 
 
-if __name__=="__main__":
-    app = QApplication(sys.argv)
-    # Creates an instance of the main GUI
-    # defined in defined in callForceRampGUI.py
-    w = labelFZGUI()
-    w.show()
-    sys.exit(app.exec_())

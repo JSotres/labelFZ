@@ -437,39 +437,3 @@ class NanoscopeForceVolumeObject():
                          topographyArray[i, j])
                         )
         self.connector.commit()
-
-    
-
-
-###############################################################################
-# Run if this is the main program
-###############################################################################
-if __name__ == "__main__":
-    # Load parsed input force volume file and output database
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--input", required=True,
-                    help="path to input force volume file")
-    ap.add_argument("-o", "--output", required=True,
-                    help="path to output database")
-    args = vars(ap.parse_args())
-
-    # Register adapter and converter for
-    # sqlite3 numpy array to bytes conversions
-    #sqlite3.register_adapter(np.ndarray, adapt_array)
-    #sqlite3.register_converter("array", convert_array)
-
-    # Create an object of the NanoscopeForceVolumeFileToDataBase class
-    fvObject = NanoscopeForceVolumeObject()
-
-    file_name3 = args['input'].replace('.', '_')
-
-    fvObject.fvToSQL(args['input'], args['output'])
-
-    #fvObject.test1(args['output'])
-
-    fvObject.getForceRampFromID(args['output'], 20)
-    fvObject.getForceRampFromID(args['output'], 30)
-
-    fvObject.getNumberForceRamps(args['output'])
-
-    
